@@ -8,7 +8,7 @@ import opportunityRoutes from "./routes/opportunityRoutes.js";
 
 dotenv.config();
 
-const app = express(); // ✅ app FIRST
+const app = express(); 
 app.use(cors());
 app.use(express.json());
 
