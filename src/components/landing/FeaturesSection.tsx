@@ -1,4 +1,5 @@
 import { motion } from "framer-motion";
+import { Link } from "react-router-dom";
 import {
   Briefcase,
   Trophy,
@@ -17,6 +18,7 @@ const features = [
     description:
       "Discover and track internship opportunities from top companies worldwide.",
     color: "internship",
+    link: "/internships",
   },
   {
     icon: Trophy,
@@ -24,6 +26,7 @@ const features = [
     description:
       "Never miss a hackathon. Get notified about upcoming events matching your skills.",
     color: "hackathon",
+    link: "/hackathons",
   },
   {
     icon: GraduationCap,
@@ -31,6 +34,7 @@ const features = [
     description:
       "Find scholarships tailored to your academic profile and financial needs.",
     color: "scholarship",
+    link: "/scholarships",
   },
   {
     icon: Calendar,
@@ -38,6 +42,7 @@ const features = [
     description:
       "Visual countdown timers and calendar sync to keep you on track.",
     color: "competition",
+    link: "/deadlines",
   },
   {
     icon: Bell,
@@ -45,6 +50,7 @@ const features = [
     description:
       "Get timely email and push notifications before application deadlines.",
     color: "workshop",
+    link: "/deadlines",
   },
   {
     icon: BarChart3,
@@ -52,6 +58,7 @@ const features = [
     description:
       "Understand patterns in missed opportunities and improve your application rate.",
     color: "primary",
+    link: "/analytics",
   },
 ];
 
@@ -111,32 +118,38 @@ export const FeaturesSection = () => {
           className="grid md:grid-cols-2 lg:grid-cols-3 gap-6"
         >
           {features.map((feature) => (
-            <motion.div
-              key={feature.title}
-              variants={itemVariants}
-              className="group relative bg-card rounded-2xl p-6 border border-border hover:border-primary/30 transition-all duration-300 hover:shadow-lifted"
-            >
-              <div
-                className={`w-14 h-14 rounded-xl flex items-center justify-center mb-5 transition-transform group-hover:scale-110 ${
-                  feature.color === "internship"
-                    ? "bg-internship/10 text-internship"
-                    : feature.color === "hackathon"
-                    ? "bg-hackathon/10 text-hackathon"
-                    : feature.color === "scholarship"
-                    ? "bg-scholarship/10 text-scholarship"
-                    : feature.color === "competition"
-                    ? "bg-competition/10 text-competition"
-                    : feature.color === "workshop"
-                    ? "bg-workshop/10 text-workshop"
-                    : "bg-primary/10 text-primary"
-                }`}
-              >
-                <feature.icon className="w-7 h-7" />
-              </div>
-              <h3 className="font-display text-xl font-semibold mb-3">
-                {feature.title}
-              </h3>
-              <p className="text-muted-foreground">{feature.description}</p>
+            <motion.div key={feature.title} variants={itemVariants}>
+              <Link to={feature.link} className="block">
+                <div className="group relative bg-card rounded-2xl p-6 border border-border hover:border-primary/30 transition-all duration-300 hover:shadow-lifted cursor-pointer">
+                  <div
+                    className={`w-14 h-14 rounded-xl flex items-center justify-center mb-5 transition-transform group-hover:scale-110 ${
+                      feature.color === "internship"
+                        ? "bg-internship/10 text-internship"
+                        : feature.color === "hackathon"
+                        ? "bg-hackathon/10 text-hackathon"
+                        : feature.color === "scholarship"
+                        ? "bg-scholarship/10 text-scholarship"
+                        : feature.color === "competition"
+                        ? "bg-competition/10 text-competition"
+                        : feature.color === "workshop"
+                        ? "bg-workshop/10 text-workshop"
+                        : "bg-primary/10 text-primary"
+                    }`}
+                  >
+                    <feature.icon className="w-7 h-7" />
+                  </div>
+                  <h3 className="font-display text-xl font-semibold mb-3 group-hover:text-primary transition-colors">
+                    {feature.title}
+                  </h3>
+                  <p className="text-muted-foreground">
+                    {feature.description}
+                  </p>
+
+                  <p className="mt-4 text-sm text-primary font-medium">
+                    Explore →
+                  </p>
+                </div>
+              </Link>
             </motion.div>
           ))}
         </motion.div>

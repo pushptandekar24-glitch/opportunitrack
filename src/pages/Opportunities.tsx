@@ -2,26 +2,67 @@ import { motion } from "framer-motion";
 import { Header } from "@/components/layout/Header";
 import { Footer } from "@/components/layout/Footer";
 import { OpportunityCard } from "@/components/opportunities/OpportunityCard";
-import { mockOpportunities } from "@/data/mockOpportunities";
+import { fetchOpportunities } from "@/services/opportunityService";
+
 import { Button } from "@/components/ui/button";
-import {
-  Search,
-  Filter,
-  SlidersHorizontal,
-  Grid3X3,
-  List,
-  ChevronDown,
-} from "lucide-react";
-import { useState } from "react";
+import { Search, Filter, Grid3X3, List, ChevronDown } from "lucide-react";
+import { useEffect, useState } from "react";
 import { Opportunity } from "@/types/opportunity";
+import { useLocation } from "react-router-dom";
+
+/**
+ * Map ROUTE (plural) -> CATEGORY (singular, DB-safe)
+ */
+const routeToCategoryMap: Record<string, string> = {
+  internships: "internship",
+  hackathons: "hackathon",
+  scholarships: "scholarship",
+  competitions: "competition",
+  workshops: "workshop",
+};
 
 const Opportunities = () => {
+  const location = useLocation();
+  const path = location.pathname.replace("/", "");
+
   const [searchQuery, setSearchQuery] = useState("");
   const [activeCategory, setActiveCategory] = useState<string>("all");
   const [viewMode, setViewMode] = useState<"grid" | "list">("grid");
   const [sortBy, setSortBy] = useState("deadline");
 
-  const opportunities: Opportunity[] = mockOpportunities;
+  const [opportunities, setOpportunities] = useState<Opportunity[]>([]);
+
+  /**
+   * 🔥 Sync category from ROUTE
+   * /internships -> internship
+   */
+  useEffect(() => {
+    const mappedCategory = routeToCategoryMap[path];
+
+    if (mappedCategory) {
+      setActiveCategory(mappedCategory);
+    } else {
+      setActiveCategory("all");
+    }
+  }, [path]);
+
+  /**
+   * 🔥 REAL API FETCH (filtered by category)
+   */
+  useEffect(() => {
+    const loadOpportunities = async () => {
+      try {
+        const data = await fetchOpportunities(
+          activeCategory === "all" ? undefined : activeCategory
+        );
+        setOpportunities(data);
+      } catch (err) {
+        console.error("Failed to fetch opportunities", err);
+      }
+    };
+
+    loadOpportunities();
+  }, [activeCategory]);
 
   const categories = [
     { id: "all", label: "All Opportunities", count: opportunities.length },
@@ -88,11 +129,13 @@ const Opportunities = () => {
       <main className="pt-24 pb-16">
         <div className="container mx-auto px-4 sm:px-6 lg:px-8">
           <motion.div className="mb-8">
-            <h1 className="font-display text-3xl sm:text-4xl font-bold mb-2">
-              Browse Opportunities
+            <h1 className="font-display text-3xl sm:text-4xl font-bold mb-2 capitalize">
+              {activeCategory === "all"
+                ? "Browse Opportunities"
+                : `${activeCategory} Opportunities`}
             </h1>
             <p className="text-muted-foreground text-lg">
-              Discover {opportunities.length}+ opportunities
+              Showing {filteredOpportunities.length} results
             </p>
           </motion.div>
 
